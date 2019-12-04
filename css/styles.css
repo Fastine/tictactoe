@@ -1,0 +1,42 @@
+/* Elements */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+h1 {
+    align-items: center
+}
+
+#container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    width: 500px;
+    height: 500px;
+    margin: auto;
+    margin-top: 100px;
+}
+
+/* Game board */
+
+div[quadrant="0"],
+div[quadrant="1"],
+div[quadrant="3"],
+div[quadrant="4"]
+ {
+    border-right: solid thick black;
+    border-bottom: solid thick black;
+}
+
+div[quadrant="2"],
+div[quadrant="5"] {
+    border-bottom: solid thick black;
+}
+
+div[quadrant="6"],
+div[quadrant="7"] {
+    border-right: solid thick black;
+}
