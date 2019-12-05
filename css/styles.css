@@ -22,6 +22,13 @@ h1 {
 
 /* Game board */
 
+div[quadrant] {
+    font-size: 7em;
+    text-align: center;
+    align-content: center;
+    line-height: 166.6px;
+}
+
 div[quadrant="0"],
 div[quadrant="1"],
 div[quadrant="3"],
