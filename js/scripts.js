@@ -14,7 +14,7 @@ const player2 = newPlayer("2", "O")
 //Game Board module
 //Manipulation of the game board
 const gameBoard = (() => {
-    let board = ['','','','','','','','','',];
+    let board = ['','','','','','','','',''];
 
     const drawBoard = function() {
         const container = document.getElementById("container");
@@ -52,13 +52,14 @@ const gameBoard = (() => {
 // Cell is clicked and:
 // *****1) Checks to see if index is empty, then renders the current players marker
 // *****2) Adds marker to array
-// 3) Check for winner (function)
-// 4) Switch players (and the subsequent marker)
+// *****3) Check for winner (function)
+// *****4) Switch players (and the subsequent marker)
+// BUGS: Clicking same square doesn't render change but switches players.. 
 
 const game = (() => {
     let activePlayer; //this can be better right?
     let activeMarker;
-    let winner = null;
+    let winner
 
     const getActivePlayer = () => activePlayer;
     const getActiveMarker = () => activeMarker;
@@ -76,7 +77,8 @@ const game = (() => {
             [2, 4, 6]
          ];
         winCombos.forEach(function(combo) {
-            if (arr[combo[0]] && arr[combo[0]] === arr[combo[1]] &&
+            if (arr[combo[0]] && 
+                arr[combo[0]] === arr[combo[1]] &&
                 arr[combo[0]] === arr[combo[2]]) winner = arr[combo[0]];
         });
 
@@ -89,17 +91,23 @@ const game = (() => {
             activePlayer = ([player1, player2][Math.round(Math.random())]);
             activeMarker = activePlayer.getMarker();
         }
+        console.log(index);
 
-        if (!gameBoard.board[index]) gameBoard.board[index] = getActiveMarker();
+        if (gameBoard.board[index] == '') {
+            gameBoard.board[index] = getActiveMarker();
+            switchPlayer();
+         };
 
         gameBoard.render();
 
-        if (checkWinner(gameBoard.board)) console.log(winner);
+        if (checkWinner(gameBoard.board)) console.log(winner); //Run endgame function++++
 
+    }
+
+    const switchPlayer = function() {
         //Switch active player & marker
         ((activePlayer == player1) && !winner) ? activePlayer = player2 : activePlayer = player1;
-        activeMarker = activePlayer.getMarker();
-
+        activeMarker = activePlayer.getMarker();        
     }
 
     return { getActivePlayer, getActiveMarker, playMarker, checkWinner }
