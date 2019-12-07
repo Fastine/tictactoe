@@ -54,7 +54,6 @@ const gameBoard = (() => {
 // *****2) Adds marker to array
 // *****3) Check for winner (function)
 // *****4) Switch players (and the subsequent marker)
-// BUGS: Clicking same square doesn't render change but switches players.. 
 
 const game = (() => {
     let activePlayer; //this can be better right?
@@ -82,7 +81,7 @@ const game = (() => {
                 arr[combo[0]] === arr[combo[2]]) winner = arr[combo[0]];
         });
 
-        return winner ? winner : gameBoard.board.includes('') ? "Tie" : null;
+        return winner ? winner : gameBoard.board.includes('') ? null : winner = "Tie"
     }
 
     const playMarker = function() {
