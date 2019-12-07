@@ -1,13 +1,29 @@
+@font-face {
+    font-family: 'Chalk';
+    src: url('fonts/EraserDust.ttf') format('truetype');
+    src: url('fonts/EraserRegular.ttf') format('truetype');
+}
+
 /* Elements */
 body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: url('../img/bg.png');
+    font-family: 'Chalk';
+    color: white;
+    letter-spacing: .175em;
     
 }
 
 h1 {
     align-items: center
+}
+
+#messages {
+    border: solid rgba(255, 255, 255, .915);
+    border-radius: 20px;
+    padding: 10px;
 }
 
 #container {
@@ -17,7 +33,23 @@ h1 {
     width: 500px;
     height: 500px;
     margin: auto;
-    margin-top: 100px;
+    margin-top: 75px;
+}
+
+#new-game-splash {
+    text-align: center;
+    border: solid thick rgba(255, 255, 255, .915);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.button {
+    border: none;
+    background: rgba(255, 255, 255, .915);
+    font-size: 1.25em;
+    border-radius: 10px;
+    font-family: 'Chalk';
+    padding: 10px;
 }
 
 /* Game board */
@@ -34,16 +66,21 @@ div[quadrant="1"],
 div[quadrant="3"],
 div[quadrant="4"]
  {
-    border-right: solid thick black;
-    border-bottom: solid thick black;
+    border-right: solid thick rgba(255, 255, 255, .915);
+    border-bottom: solid thick rgba(255, 255, 255, .915);
+    border-radius: 5px;
 }
 
 div[quadrant="2"],
 div[quadrant="5"] {
-    border-bottom: solid thick black;
+    border-bottom: solid thick rgba(255, 255, 255, .915);
+    border-radius: 5px;
+
 }
 
 div[quadrant="6"],
 div[quadrant="7"] {
-    border-right: solid thick black;
+    border-right: solid thick rgba(255, 255, 255, .95);
+    border-radius: 5px;
+
 }
