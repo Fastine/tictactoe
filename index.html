@@ -16,20 +16,31 @@
 
   <h1>Tic-Tac-Toe</h1>
 
-  <div id="messages">Test message</div>
+  <!-- <div id="messages"></div> -->
+
+  <div id="scoreboard">
+    <span class="player1">Player 1 : <span id='player-1-score' class='score'>0</span></span>
+    <span id="messages" class="hidden"></span>
+    <span class="player2">Player 2 : <span id='player-2-score' class='score'>0</span></span>
+  </div>
+
+  <div id="end-of-game-splash" class='hidden'>
+    <button type="button" class="button end-of-game" onclick="game.startGame()">Play Again</button>
+    <button type="button" class="button end-of-game" onclick="game.resetGame()">New Game</button>
+  </div>
 
   <div id="new-game-splash">
     <form class="new-game-container">
       <h1>New Game</h1>
 
       <label for="players">Players: </label>
-      <input type="radio" name="players" value="1" disabled>1
-      <input type="radio" name="players" value="2">2 <br><br>
+      <input type="radio" class="radio" name="players" value="1" disabled>1
+      <input type="radio" class="radio" name="players" value="2">2 <br><br>
 
       <label for="difficulty">CPU Difficulty: </label>
-      <input type="radio" name="difficulty" value="easy" disabled>Easy
-      <input type="radio" name="difficulty" value="average" disabled>Average
-      <input type="radio" name="difficulty" value="impossible" disabled>Impossible <br><br>
+      <input type="radio" class="radio" name="difficulty" value="easy" disabled>Easy
+      <input type="radio" class="radio" name="difficulty" value="average" disabled>Average
+      <input type="radio" class="radio" name="difficulty" value="impossible" disabled>Impossible <br><br>
 
       <button type="button" class="button" onclick="game.startGame()">Start Game</button>
 

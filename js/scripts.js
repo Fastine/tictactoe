@@ -1,6 +1,6 @@
 //Player factories
 //Creating new players and their markers
-const newPlayer = (player, marker) => {
+const newPlayer = (player, marker, score) => {
     const getPlayer = () => player;
     const getMarker = () => marker;
 
@@ -67,9 +67,14 @@ const gameBoard = (() => {
 // *****4) Switch players (and the subsequent marker)
 
 const game = (() => {
-    let activePlayer; //this can be better right?
-    let activeMarker;
-    let winner
+    let activePlayer,
+    activeMarker,
+    winner;
+
+    let player1Score = 0;
+    let player2Score = 0;
+    const player1ScoreValue = document.getElementById('player-1-score');
+    const player2ScoreValue = document.getElementById('player-2-score');
 
     const getActivePlayer = () => activePlayer;
     const getActiveMarker = () => activeMarker;
@@ -79,16 +84,27 @@ const game = (() => {
     }
 
     const startGame = function() {
-        if (!activePlayer) { //Randomly choose starting player and assign appropriate marker
-            activePlayer = ([player1, player2][Math.round(Math.random())]);
-            activeMarker = activePlayer.getMarker();
-            messages.innerHTML = `${activeMarker} Starts`;
-        }
+    //Randomly choose starting player and assign appropriate marker
+        activePlayer = ([player1, player2][Math.round(Math.random())]);
+        activeMarker = activePlayer.getMarker();
+        messages.innerHTML = `${activeMarker} Starts`;
+        winner = null;
 
         gameBoard.drawBoard();
 
         newGameSplash.className = "hidden";
+        endOfGameSplash.className = "hidden";
     };
+
+    const resetGame = function () {
+        player1Score = 0;
+        player2Score = 0;
+        player1ScoreValue.innerHTML = `${player1Score}`;
+        player2ScoreValue.innerHTML = `${player2Score}`;
+        endOfGameSplash.className = "hidden";
+        newGameSplash.classList.remove("hidden");
+
+    }
 
     //Check for win conditions
     const checkWinner = function(arr) {  
@@ -125,7 +141,10 @@ const game = (() => {
 
         if (checkWinner(gameBoard.board)) {
             _displayWinner();
-            newGameSplash.classList.remove('hidden');
+            (winner === 'X') ? player1Score++ : player2Score++;
+            player1ScoreValue.innerHTML = `${player1Score}`;
+            player2ScoreValue.innerHTML = `${player2Score}`;
+            endOfGameSplash.classList.remove('hidden');
         }
     }
 
@@ -133,10 +152,11 @@ const game = (() => {
         //Switch active player & marker
         ((activePlayer == player1) && !winner) ? activePlayer = player2 : activePlayer = player1;
         activeMarker = activePlayer.getMarker();
-        messages.innerHTML = `${activeMarker}'s Turn`       
+        messages.innerHTML = `${activeMarker}'s Turn`;
+        messages.classList.remove('hidden')
     }
 
-    return { getActivePlayer, getActiveMarker, playMarker, checkWinner, startGame }
+    return { getActivePlayer, getActiveMarker, playMarker, checkWinner, startGame, resetGame }
 
 })();
 
@@ -159,6 +179,6 @@ const game = (() => {
 
 //Event Listeners
 
-
+const endOfGameSplash = document.getElementById('end-of-game-splash');
 const messages = document.getElementById('messages');
 const newGameSplash = document.getElementById('new-game-splash')

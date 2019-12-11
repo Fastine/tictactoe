@@ -21,9 +21,20 @@ h1 {
 }
 
 #messages {
+    font-size: 1.7em;
+    margin: 30px;
+    border-top: 0;
+    border-bottom: 0;
+}
+
+#scoreboard {
     border: solid rgba(255, 255, 255, .915);
     border-radius: 20px;
     padding: 10px;
+}
+
+#scoreboard {
+    min-width: 435px;
 }
 
 #container {
@@ -38,10 +49,12 @@ h1 {
 
 #new-game-splash {
     text-align: center;
-    border: solid thick rgba(255, 255, 255, .915);
+    border: solid rgba(255, 255, 255, .915);
+    border-radius: 50px;
     padding: 20px;
     margin-top: 20px;
 }
+
 
 .button {
     border: none;
@@ -54,6 +67,23 @@ h1 {
 
 .hidden {
     display: none;
+}
+
+.score {
+    font-size: 2em;
+    padding: 5px;
+}
+
+.end-of-game {
+    margin-top: 20px;
+}
+
+.player1 {
+    float: left;
+}
+
+.player2 {
+    float: right;
 }
 
 /* Game board */
@@ -87,4 +117,32 @@ div[quadrant="7"] {
     border-right: solid thick rgba(255, 255, 255, .95);
     border-radius: 5px;
 
+}
+
+.radio {
+    -webkit-apperance: none;
+    -moz-apperance: none;
+    appearance: none;
+    display: inline-block;
+    position: relative;
+    border-radius: 50px;
+    top: 10px;
+    height: 30px;
+    width: 30px;
+    background-color: transparent;
+}
+
+.radio:checked::before {
+    position: absolute;
+    font: 13px/1 'Open Sans', sans-serif;
+    left: 11px;
+    top: 7px;
+    content: '\02143';
+    transform: rotate(40deg);
+    background-color: transparent;
+}
+
+button:active {
+    background: url('../img/bg.png');
+    color: rgba(255, 255, 255, .95);
 }
