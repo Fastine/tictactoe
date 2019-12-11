@@ -52,6 +52,10 @@ h1 {
     padding: 10px;
 }
 
+.hidden {
+    display: none;
+}
+
 /* Game board */
 
 div[quadrant] {

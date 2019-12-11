@@ -23,15 +23,15 @@
       <h1>New Game</h1>
 
       <label for="players">Players: </label>
-      <input type="radio" name="players" value="1">1
+      <input type="radio" name="players" value="1" disabled>1
       <input type="radio" name="players" value="2">2 <br><br>
 
       <label for="difficulty">CPU Difficulty: </label>
-      <input type="radio" name="difficulty" value="easy">Easy
-      <input type="radio" name="difficulty" value="average">Average
-      <input type="radio" name="difficulty" value="impossible">Impossible <br><br>
+      <input type="radio" name="difficulty" value="easy" disabled>Easy
+      <input type="radio" name="difficulty" value="average" disabled>Average
+      <input type="radio" name="difficulty" value="impossible" disabled>Impossible <br><br>
 
-      <button type="button" class="button" onclick="startGame()">Start Game</button>
+      <button type="button" class="button" onclick="game.startGame()">Start Game</button>
 
 
 

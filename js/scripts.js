@@ -16,20 +16,31 @@ const player2 = newPlayer("2", "O")
 const gameBoard = (() => {
     let board = ['','','','','','','','',''];
 
+    const isEmpty = (cell) => cell === '';
+
     const drawBoard = function() {
         const container = document.getElementById("container");
-        for (i = 0; i < 9; i++) {
-            let div = document.createElement('div');
-            div.setAttribute("quadrant", [i])
-            container.append(div)
+        if (gameBoard.board.every(isEmpty)) {
+            for (i = 0; i < 9; i++) {
+                let div = document.createElement('div');
+                div.setAttribute("quadrant", [i])
+                container.append(div)
+            }
+
+            const cells = Array.from(document.querySelectorAll("[quadrant]"));
+            cells.forEach(cell => cell.addEventListener('click', game.playMarker));
         }
+        else {
+            gameBoard.board.fill('');
+        }
+
+        gameBoard.render();
     }
 
     const render = function() {
         let index = document.querySelectorAll("[quadrant]");
         for (i = 0; i < index.length; i++) {
-            let marker = gameBoard.board[i]
-            if (!marker) continue;
+            let marker = gameBoard.board[i];
             index[i].innerHTML = marker;
         }
     }
@@ -63,6 +74,22 @@ const game = (() => {
     const getActivePlayer = () => activePlayer;
     const getActiveMarker = () => activeMarker;
 
+    const _displayWinner = function() {
+        (winner === "Tie") ? messages.innerHTML = "Tie game! Try again?" : messages.innerHTML = `${winner} WINS! Play again?`
+    }
+
+    const startGame = function() {
+        if (!activePlayer) { //Randomly choose starting player and assign appropriate marker
+            activePlayer = ([player1, player2][Math.round(Math.random())]);
+            activeMarker = activePlayer.getMarker();
+            messages.innerHTML = `${activeMarker} Starts`;
+        }
+
+        gameBoard.drawBoard();
+
+        newGameSplash.className = "hidden";
+    };
+
     //Check for win conditions
     const checkWinner = function(arr) {  
         const winCombos = [
@@ -86,10 +113,7 @@ const game = (() => {
 
     const playMarker = function() {
         let index = this.getAttribute("quadrant");
-        if (!activePlayer) { //Randomly choose starting player and assign appropriate marker
-            activePlayer = ([player1, player2][Math.round(Math.random())]);
-            activeMarker = activePlayer.getMarker();
-        }
+
         console.log(index);
 
         if (gameBoard.board[index] == '') {
@@ -99,17 +123,20 @@ const game = (() => {
 
         gameBoard.render();
 
-        if (checkWinner(gameBoard.board)) console.log(winner); //Run endgame function++++
-
+        if (checkWinner(gameBoard.board)) {
+            _displayWinner();
+            newGameSplash.classList.remove('hidden');
+        }
     }
 
     const switchPlayer = function() {
         //Switch active player & marker
         ((activePlayer == player1) && !winner) ? activePlayer = player2 : activePlayer = player1;
-        activeMarker = activePlayer.getMarker();        
+        activeMarker = activePlayer.getMarker();
+        messages.innerHTML = `${activeMarker}'s Turn`       
     }
 
-    return { getActivePlayer, getActiveMarker, playMarker, checkWinner }
+    return { getActivePlayer, getActiveMarker, playMarker, checkWinner, startGame }
 
 })();
 
@@ -120,8 +147,8 @@ const game = (() => {
 
 //Testing area
 
-gameBoard.drawBoard();
-gameBoard.render();
+// gameBoard.drawBoard();
+// gameBoard.render();
 
 
 
@@ -131,5 +158,7 @@ gameBoard.render();
 
 
 //Event Listeners
-const cells = Array.from(document.querySelectorAll("[quadrant]"));
-cells.forEach(cell => cell.addEventListener('click', game.playMarker));
+
+
+const messages = document.getElementById('messages');
+const newGameSplash = document.getElementById('new-game-splash')
