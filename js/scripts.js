@@ -88,6 +88,7 @@ const game = (() => {
         activePlayer = ([player1, player2][Math.round(Math.random())]);
         activeMarker = activePlayer.getMarker();
         messages.innerHTML = `${activeMarker} Starts`;
+        messages.classList.remove("hidden")
         winner = null;
 
         gameBoard.drawBoard();
@@ -141,7 +142,7 @@ const game = (() => {
 
         if (checkWinner(gameBoard.board)) {
             _displayWinner();
-            (winner === 'X') ? player1Score++ : player2Score++;
+            (winner === 'X') ? player1Score++ : (winner === 'O') ? player2Score++ : console.log("nothing");
             player1ScoreValue.innerHTML = `${player1Score}`;
             player2ScoreValue.innerHTML = `${player2Score}`;
             endOfGameSplash.classList.remove('hidden');
