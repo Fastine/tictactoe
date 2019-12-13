@@ -1,24 +1,57 @@
+//Event Listeners
+
+const endOfGameSplash = document.getElementById('end-of-game-splash');
+const messages = document.getElementById('messages');
+const newGameSplash = document.getElementById('new-game-splash')
+
+const player1Form = document.getElementById("one-player")
+const player2Form = document.getElementById("two-player");
+const player1Radial = document.getElementById("player-1-radial");
+const player2Radial = document.getElementById("player-2-radial");
+
+const player1Name1 = document.getElementById("player-1-name-1");
+const player1Name2 = document.getElementById("player-1-name-2");
+const player2Name = document.getElementById("player-2-name");
+
+player1Radial.addEventListener("click", function () {
+    player1Form.classList.remove('hidden');
+    player2Form.classList.add('hidden');
+});
+player2Radial.addEventListener("click", function () {
+    player2Form.classList.remove('hidden');
+    player1Form.classList.add('hidden');
+});
+
 //Player factories
 //Creating new players and their markers
-const newPlayer = (player, marker, score) => {
+const newPlayer = (player, marker, name, difficulty) => {
     const getPlayer = () => player;
     const getMarker = () => marker;
+    const getName = () => name;
+    const getDifficulty = () => difficulty;
 
-    return {getPlayer, getMarker}
+    return {
+        getPlayer,
+        getMarker,
+        getName,
+        getDifficulty
+    }
 }
 
 //Generate players & their markers
-const player1 = newPlayer("1", "X")
-const player2 = newPlayer("2", "O")
+// const player1 = newPlayer("1", "X")
+// const player2 = newPlayer("2", "O")
+
+let player1, player2;
 
 //Game Board module
 //Manipulation of the game board
 const gameBoard = (() => {
-    let board = ['','','','','','','','',''];
+    let board = ['', '', '', '', '', '', '', '', ''];
 
     const isEmpty = (cell) => cell === '';
 
-    const drawBoard = function() {
+    const drawBoard = function () {
         const container = document.getElementById("container");
         if (gameBoard.board.every(isEmpty)) {
             for (i = 0; i < 9; i++) {
@@ -29,15 +62,14 @@ const gameBoard = (() => {
 
             const cells = Array.from(document.querySelectorAll("[quadrant]"));
             cells.forEach(cell => cell.addEventListener('click', game.playMarker));
-        }
-        else {
+        } else {
             gameBoard.board.fill('');
         }
 
         gameBoard.render();
     }
 
-    const render = function() {
+    const render = function () {
         let index = document.querySelectorAll("[quadrant]");
         for (i = 0; i < index.length; i++) {
             let marker = gameBoard.board[i];
@@ -47,14 +79,12 @@ const gameBoard = (() => {
 
     const getBoard = () => board;
 
-    // DELETE
-    // const drawMarker = function() {
-    //     let index = this.getAttribute("quadrant");
-    //     if (!gameBoard.board[index]) gameBoard.board[index] = game.getActiveMarker();
-    //     render();
-    // } 
-
-    return { board, getBoard, drawBoard, render }
+    return {
+        board,
+        getBoard,
+        drawBoard,
+        render
+    }
 })();
 
 //Game flow module
@@ -68,26 +98,41 @@ const gameBoard = (() => {
 
 const game = (() => {
     let activePlayer,
-    activeMarker,
-    winner;
+        activeMarker,
+        winner;
 
     let player1Score = 0;
     let player2Score = 0;
     const player1ScoreValue = document.getElementById('player-1-score');
     const player2ScoreValue = document.getElementById('player-2-score');
+    const player1ScoreboardName = document.getElementById('player-1-scoreboard-name');
+    const player2ScoreboardName = document.getElementById('player-2-scoreboard-name');
 
     const getActivePlayer = () => activePlayer;
     const getActiveMarker = () => activeMarker;
 
-    const _displayWinner = function() {
-        (winner === "Tie") ? messages.innerHTML = "Tie game! Try again?" : messages.innerHTML = `${winner} WINS! Play again?`
+    const _displayWinner = function () {
+        (winner === "Tie") ? messages.innerHTML = "Tie game! Try again?": messages.innerHTML = `${winner.getName()} WINS! Play again?`
     }
 
-    const startGame = function() {
-    //Randomly choose starting player and assign appropriate marker
+    const startGame = function () {
+        //Decide 1 or 2 players
+        if (player1Radial.checked) {
+            player1 = newPlayer("1", "X", player1Name1.value)
+            player2 = newPlayer("2", "O", "Computer")
+        } else if (player2Radial.checked) {
+            player1 = newPlayer("1", "X", player1Name2.value)
+            player2 = newPlayer("2", "O", player2Name.value)
+        }
+
+        //Update scoreboard names
+        player1ScoreboardName.innerText = `${player1.getName()} (${player1.getMarker()}) : `
+        player2ScoreboardName.innerText = `${player2.getName()} (${player2.getMarker()}) : `
+
+        //Randomly choose starting player and assign appropriate marker
         activePlayer = ([player1, player2][Math.round(Math.random())]);
         activeMarker = activePlayer.getMarker();
-        messages.innerHTML = `${activeMarker} Starts`;
+        messages.innerHTML = `${activePlayer.getName()} Starts`;
         messages.classList.remove("hidden")
         winner = null;
 
@@ -108,7 +153,7 @@ const game = (() => {
     }
 
     //Check for win conditions
-    const checkWinner = function(arr) {  
+    const checkWinner = function (arr) {
         const winCombos = [
             [0, 1, 2],
             [3, 4, 5],
@@ -118,68 +163,53 @@ const game = (() => {
             [2, 5, 8],
             [0, 4, 8],
             [2, 4, 6]
-         ];
-        winCombos.forEach(function(combo) {
-            if (arr[combo[0]] && 
+        ];
+        winCombos.forEach(function (combo) {
+            if (arr[combo[0]] &&
                 arr[combo[0]] === arr[combo[1]] &&
-                arr[combo[0]] === arr[combo[2]]) winner = arr[combo[0]];
+                arr[combo[0]] === arr[combo[2]]) winner = activePlayer;
         });
 
         return winner ? winner : gameBoard.board.includes('') ? null : winner = "Tie"
     }
 
-    const playMarker = function() {
+    const playMarker = function () {
         let index = this.getAttribute("quadrant");
 
         console.log(index);
 
+        //Places active marker if space is empty
         if (gameBoard.board[index] == '') {
             gameBoard.board[index] = getActiveMarker();
-            switchPlayer();
-         };
+        };
 
         gameBoard.render();
-
+        //check for winner, display it and end of game splash
         if (checkWinner(gameBoard.board)) {
             _displayWinner();
-            (winner === 'X') ? player1Score++ : (winner === 'O') ? player2Score++ : console.log("nothing");
+            (winner === player1) ? player1Score++ : (winner === player2) ? player2Score++ : console.log("nothing");
             player1ScoreValue.innerHTML = `${player1Score}`;
             player2ScoreValue.innerHTML = `${player2Score}`;
             endOfGameSplash.classList.remove('hidden');
-        }
+        } else switchPlayer();
+
     }
 
-    const switchPlayer = function() {
+    const switchPlayer = function () {
         //Switch active player & marker
-        ((activePlayer == player1) && !winner) ? activePlayer = player2 : activePlayer = player1;
+        ((activePlayer == player1) && !winner) ? activePlayer = player2: activePlayer = player1;
         activeMarker = activePlayer.getMarker();
-        messages.innerHTML = `${activeMarker}'s Turn`;
+        messages.innerHTML = `${activePlayer.getName()}'s Turn`;
         messages.classList.remove('hidden')
     }
 
-    return { getActivePlayer, getActiveMarker, playMarker, checkWinner, startGame, resetGame }
+    return {
+        getActivePlayer,
+        getActiveMarker,
+        playMarker,
+        checkWinner,
+        startGame,
+        resetGame,
+    }
 
 })();
-
-
-
-
-
-
-//Testing area
-
-// gameBoard.drawBoard();
-// gameBoard.render();
-
-
-
-
-
-
-
-
-//Event Listeners
-
-const endOfGameSplash = document.getElementById('end-of-game-splash');
-const messages = document.getElementById('messages');
-const newGameSplash = document.getElementById('new-game-splash')
