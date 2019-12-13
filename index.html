@@ -1,6 +1,7 @@
 <!doctype html>
 
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
 
@@ -19,9 +20,11 @@
   <!-- <div id="messages"></div> -->
 
   <div id="scoreboard">
-    <span class="player1">Player 1 : <span id='player-1-score' class='score'>0</span></span>
+    <span class="player1"><span id="player-1-scoreboard-name">Player 1 : </span><span id='player-1-score'
+        class='score'>0</span></span>
     <span id="messages" class="hidden"></span>
-    <span class="player2">Player 2 : <span id='player-2-score' class='score'>0</span></span>
+    <span class="player2"><span id="player-2-scoreboard-name">Player 2 : </span><span id='player-2-score'
+        class='score'>0</span></span>
   </div>
 
   <div id="end-of-game-splash" class='hidden'>
@@ -32,18 +35,54 @@
   <div id="new-game-splash">
     <form class="new-game-container">
       <h1>New Game</h1>
+      <div class=players>
+        <label for="players">Players:
+          <label class="chalk-checkbox">
+            <input type="radio" class="radio" id="player-1-radial" name="players" value="1" checked> 1
+            <span class="radial"></span>
+          </label>
 
-      <label for="players">Players: </label>
-      <input type="radio" class="radio" name="players" value="1" disabled>1
-      <input type="radio" class="radio" name="players" value="2">2 <br><br>
+          <label class="chalk-checkbox">
+            <input type="radio" class="radio" id="player-2-radial" name="players" value="2"> 2 <br><br>
+            <span class="radial"></span>
+          </label>
+        </label>
+      </div>
 
-      <label for="difficulty">CPU Difficulty: </label>
-      <input type="radio" class="radio" name="difficulty" value="easy" disabled>Easy
-      <input type="radio" class="radio" name="difficulty" value="average" disabled>Average
-      <input type="radio" class="radio" name="difficulty" value="impossible" disabled>Impossible <br><br>
+      <div class="one-player" id="one-player">
+        <br>
+        <label for="player-1-name">Player 1 Name :
+          <input type="text" class="text-field" id="player-1-name-1" name="player-1-name" value="Player 1"> <br><br>
+        </label>
+        <label for="difficulty">CPU Difficulty:
+          <label class="chalk-checkbox">
+            <input type="radio" class="radio" name="difficulty" value="easy" checked>Easy
+            <span class="radial"></span>
+          </label>
+          <label class="chalk-checkbox">
+            <input type="radio" class="radio" name="difficulty" value="average">Average
+            <span class="radial"></span>
+          </label>
+          <label class="chalk-checkbox">
+            <input type="radio" class="radio" name="difficulty" value="impossible">Impossible <br><br>
+            <span class="radial"></span>
+          </label>
+        </label>
+      </div>
+
+      <div class="two-player hidden" id="two-player">
+        <br>
+        <label for="player-1-name">Player 1 Name :
+          <input type="text" class="text-field" id="player-1-name-2" name="player-1-name" value="Player 1"> <br>
+        </label>
+        <label for="player-2-name">Player 2 Name :
+          <input type="text" class="text-field" id="player-2-name" name="player-2-name" value="Player 2"> <br><br>
+        </label>
+      </div>
+
 
       <button type="button" class="button" onclick="game.startGame()">Start Game</button>
-
+    </form>
 
 
   </div>
@@ -52,6 +91,8 @@
 
   </div>
 
-  <script src="js/scripts.js"></script>
+
 </body>
+<script src="js/scripts.js"></script>
+
 </html>

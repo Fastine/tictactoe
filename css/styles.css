@@ -4,6 +4,10 @@
     src: url('fonts/EraserRegular.ttf') format('truetype');
 }
 
+* {
+    box-sizing: border-box;
+}
+
 /* Elements */
 body {
     display: flex;
@@ -13,7 +17,8 @@ body {
     font-family: 'Chalk';
     color: white;
     letter-spacing: .175em;
-    
+    cursor: default;
+
 }
 
 h1 {
@@ -98,51 +103,137 @@ div[quadrant] {
 div[quadrant="0"],
 div[quadrant="1"],
 div[quadrant="3"],
-div[quadrant="4"]
- {
+div[quadrant="4"] {
     border-right: solid thick rgba(255, 255, 255, .915);
     border-bottom: solid thick rgba(255, 255, 255, .915);
-    border-radius: 5px;
+    border-radius: 1px;
 }
 
 div[quadrant="2"],
 div[quadrant="5"] {
     border-bottom: solid thick rgba(255, 255, 255, .915);
-    border-radius: 5px;
+    border-radius: 1px;
 
 }
 
 div[quadrant="6"],
 div[quadrant="7"] {
     border-right: solid thick rgba(255, 255, 255, .95);
-    border-radius: 5px;
+    border-radius: 1px;
 
 }
 
-.radio {
-    -webkit-apperance: none;
-    -moz-apperance: none;
-    appearance: none;
-    display: inline-block;
-    position: relative;
-    border-radius: 50px;
-    top: 10px;
-    height: 30px;
-    width: 30px;
-    background-color: transparent;
-}
-
-.radio:checked::before {
+/* Hiding browser default radial */
+.chalk-checkbox input {
     position: absolute;
-    font: 13px/1 'Open Sans', sans-serif;
-    left: 11px;
-    top: 7px;
-    content: '\02143';
-    transform: rotate(40deg);
-    background-color: transparent;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Customizing the label container */
+.chalk-checkbox {
+    display: inline;
+    position: relative;
+    padding-left: 20px;
+    cursor: pointer;
+    font-size: 1.15em;
+}
+
+.chalk-checkbox:hover input~.radial {
+    background: rgba(255, 255, 255, .9);
+}
+
+/* Custom checkbox */
+.radial {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 18px;
+    width: 18px;
+    background: url('../img/bg.png');
+    border: solid thin rgba(255, 255, 255, .9);
+}
+
+.radial:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.chalk-checkbox input:checked~.radial:after {
+    display: block;
+}
+
+.chalk-checkbox .radial:after {
+    content: "\2713";
+    font-size: 2em;
+    bottom: -10px;
+    left: -4px;
+}
+
+
+.text-field {
+    border: solid thin rgba(255, 255, 255, .9);
+    border-radius: 50px;
+    padding: 2px;
+    background: url('../img/bg.png');
+    color: rgba(255, 255, 255, .9);
+    font-family: 'Chalk';
+    text-align: center;
 }
 
 button:active {
     background: url('../img/bg.png');
     color: rgba(255, 255, 255, .95);
+    outline: none;
+}
+
+/* Form Mechanics */
+
+/* .one-player {
+    opacity: 0;
+    overflow: hidden;
+    max-height: 0;
+    display: none;
+}
+
+.two-player {
+    opacity: 0;
+    overflow: hidden;
+    max-height: 0;
+    display: none;
+}
+
+.chalk-checkbox input[value="1"]:checked~.new-game-container .one-player {
+    opacity: 1;
+    overflow: visible;
+    max-height: 100px;
+    display: inline;
+}
+
+.two-player {
+    opacity: 0;
+    overflow: hidden;
+    max-height: 0;
+    display: none;
+}
+
+input[value="2"]:checked~.two-player {
+    opacity: 1;
+    overflow: visible;
+    max-height: 100px;
+    display: inline;
+}
+
+.one-player {
+    opacity: 0;
+    overflow: hidden;
+    max-height: 0;
+    display: none;
+} */
+
+input[type="text"]:focus {
+    outline: none;
 }
