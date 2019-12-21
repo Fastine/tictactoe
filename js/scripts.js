@@ -62,7 +62,13 @@ const gameBoard = (() => {
 			}
 
 			const cells = Array.from(document.querySelectorAll('[quadrant]'));
-			cells.forEach(cell => cell.addEventListener('click', game.playMarker));
+			cells.forEach(cell =>
+				cell.addEventListener('click', function() {
+					if (!game.getActivePlayer().difficulty)
+						game.playMarker(cells.indexOf(cell));
+					else return;
+				})
+			);
 		} else {
 			gameBoard.board.fill('');
 		}
@@ -194,7 +200,7 @@ const game = (() => {
 
 	const playMarker = function(index) {
 		//If against computer, choice is passed in, otherwise choice is cell clicked
-		index = activePlayer.difficulty ? index : this.getAttribute('quadrant');
+		// index = activePlayer.difficulty ? index : this.getAttribute('quadrant');
 
 		console.log(index);
 
@@ -216,6 +222,10 @@ const game = (() => {
 			player2ScoreValue.innerHTML = `${player2Score}`;
 			endOfGameSplash.classList.remove('hidden');
 		} else switchPlayer();
+	};
+
+	const humanPlay = function() {
+		if (!activePlayer.difficulty) playMarker();
 	};
 
 	const switchPlayer = function() {
@@ -260,7 +270,8 @@ const game = (() => {
 		checkWinner,
 		startGame,
 		resetGame,
-		computerPlay
+		computerPlay,
+		humanPlay
 	};
 })();
 
