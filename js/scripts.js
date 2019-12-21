@@ -234,11 +234,14 @@ const game = (() => {
 	const computerPlay = function() {
 		switch (player2.difficulty) {
 			case 'easy':
+				//Play on random cell, replay if not empty
 				let choice = Math.floor(Math.random() * gameBoard.board.length);
 				if (gameBoard.board[choice] != '') {
 					computerPlay();
 				} else {
-					playMarker(choice);
+					setTimeout(function() {
+						playMarker(choice);
+					}, 1500);
 				}
 				break;
 			case 'average':
@@ -260,3 +263,6 @@ const game = (() => {
 		computerPlay
 	};
 })();
+
+// Minimax
+// function bestMove() {}
