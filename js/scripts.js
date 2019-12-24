@@ -13,11 +13,11 @@ const player1Name1 = document.getElementById('player-1-name-1');
 const player1Name2 = document.getElementById('player-1-name-2');
 const player2Name = document.getElementById('player-2-name');
 
-player1Radial.addEventListener('click', function() {
+player1Radial.addEventListener('click', function () {
 	player1Form.classList.remove('hidden');
 	player2Form.classList.add('hidden');
 });
-player2Radial.addEventListener('click', function() {
+player2Radial.addEventListener('click', function () {
 	player2Form.classList.remove('hidden');
 	player1Form.classList.add('hidden');
 });
@@ -52,7 +52,7 @@ const gameBoard = (() => {
 
 	const isEmpty = cell => cell === '';
 
-	const drawBoard = function() {
+	const drawBoard = function () {
 		const container = document.getElementById('container');
 		if (gameBoard.board.every(isEmpty)) {
 			for (i = 0; i < 9; i++) {
@@ -63,7 +63,7 @@ const gameBoard = (() => {
 
 			const cells = Array.from(document.querySelectorAll('[quadrant]'));
 			cells.forEach(cell =>
-				cell.addEventListener('click', function() {
+				cell.addEventListener('click', function () {
 					if (!game.getActivePlayer().difficulty)
 						game.playMarker(cells.indexOf(cell));
 					else return;
@@ -76,7 +76,7 @@ const gameBoard = (() => {
 		gameBoard.render();
 	};
 
-	const render = function() {
+	const render = function () {
 		let index = document.querySelectorAll('[quadrant]');
 		for (i = 0; i < index.length; i++) {
 			let marker = gameBoard.board[i];
@@ -120,13 +120,13 @@ const game = (() => {
 	const getActivePlayer = () => activePlayer;
 	const getActiveMarker = () => activeMarker;
 
-	const _displayWinner = function() {
-		winner === 'Tie'
-			? (messages.innerHTML = 'Tie game! Try again?')
-			: (messages.innerHTML = `${winner.getName()} WINS! Play again?`);
+	const _displayWinner = function () {
+		winner === 'Tie' ?
+			(messages.innerHTML = 'Tie game! Try again?') :
+			(messages.innerHTML = `${winner.getName()} WINS! Play again?`);
 	};
 
-	const startGame = function() {
+	const startGame = function () {
 		//Decide 1 or 2 players
 		if (player1Radial.checked) {
 			player1 = newPlayer('1', 'X', player1Name1.value);
@@ -157,11 +157,14 @@ const game = (() => {
 		newGameSplash.className = 'hidden';
 		endOfGameSplash.className = 'hidden';
 
+		//Score assignment for minmax
+		assignScores(player2.getMarker, player1.getMarker);
+
 		//Checks if player 2 is computer and plays if needed
 		if (player2.difficulty && activePlayer == player2) computerPlay();
 	};
 
-	const resetGame = function() {
+	const resetGame = function () {
 		player1Score = 0;
 		player2Score = 0;
 		player1ScoreValue.innerHTML = `${player1Score}`;
@@ -171,7 +174,8 @@ const game = (() => {
 	};
 
 	//Check for win conditions
-	const checkWinner = function(arr) {
+	const checkWinner = function (arr) {
+		let isWinner = null;
 		const winCombos = [
 			[0, 1, 2],
 			[3, 4, 5],
@@ -182,23 +186,23 @@ const game = (() => {
 			[0, 4, 8],
 			[2, 4, 6]
 		];
-		winCombos.forEach(function(combo) {
+		winCombos.forEach(function (combo) {
 			if (
 				arr[combo[0]] &&
 				arr[combo[0]] === arr[combo[1]] &&
 				arr[combo[0]] === arr[combo[2]]
 			)
-				winner = activePlayer;
+				isWinner = activeMarker;
 		});
 
-		return winner
-			? winner
-			: gameBoard.board.includes('')
-			? null
-			: (winner = 'Tie');
+		return isWinner ?
+			isWinner :
+			gameBoard.board.includes('') ?
+			null :
+			"Tie";
 	};
 
-	const playMarker = function(index) {
+	const playMarker = function (index) {
 		//If against computer, choice is passed in, otherwise choice is cell clicked
 		// index = activePlayer.difficulty ? index : this.getAttribute('quadrant');
 
@@ -213,26 +217,28 @@ const game = (() => {
 		//check for winner, display it and end of game splash
 		if (checkWinner(gameBoard.board)) {
 			_displayWinner();
-			winner === player1
-				? player1Score++
-				: winner === player2
-				? player2Score++
-				: console.log('nothing');
+			winner === player1 ?
+				player1Score++
+				:
+				winner === player2 ?
+				player2Score++
+				:
+				console.log('nothing');
 			player1ScoreValue.innerHTML = `${player1Score}`;
 			player2ScoreValue.innerHTML = `${player2Score}`;
 			endOfGameSplash.classList.remove('hidden');
 		} else switchPlayer();
 	};
 
-	const humanPlay = function() {
+	const humanPlay = function () {
 		if (!activePlayer.difficulty) playMarker();
 	};
 
-	const switchPlayer = function() {
+	const switchPlayer = function () {
 		//Switch active player & marker
-		activePlayer == player1 && !winner
-			? (activePlayer = player2)
-			: (activePlayer = player1);
+		activePlayer == player1 && !winner ?
+			(activePlayer = player2) :
+			(activePlayer = player1);
 		activeMarker = activePlayer.getMarker();
 		messages.innerHTML = `${activePlayer.getName()}'s Turn`;
 		messages.classList.remove('hidden');
@@ -241,7 +247,7 @@ const game = (() => {
 		if (activePlayer.difficulty) game.computerPlay();
 	};
 
-	const computerPlay = function() {
+	const computerPlay = function () {
 		switch (player2.difficulty) {
 			case 'easy':
 				//Play on random cell, replay if not empty
@@ -249,7 +255,7 @@ const game = (() => {
 				if (gameBoard.board[choice] != '') {
 					computerPlay();
 				} else {
-					setTimeout(function() {
+					setTimeout(function () {
 						playMarker(choice);
 					}, 1500);
 				}
@@ -258,10 +264,101 @@ const game = (() => {
 				console.log('average');
 				break;
 			case 'impossible':
-				console.log('impossible');
+
+				bestMove();
+
 				break;
 		}
 	};
+
+	const bestMove = function () {
+		let bestScore = -Infinity;
+		let move;
+		//Retrieve all available spots
+		// let available = [];
+		// gameBoard.board.forEach(function (cell, index) {
+		// 	if (cell == '') available.push(index);
+		// });
+
+		// available.forEach(function (cell) {
+		// 	gameBoard.board[cell] = game.getActiveMarker();
+		// 	let score = minimax(gameBoard.board, 0, false);
+		// 	gameBoard.board[cell] = '';
+		// 	if (score > bestScore) {
+		// 		bestScore = score;
+		// 		move = cell;
+		// 	}
+		// });
+		for (i = 0; i < gameBoard.board.length; i++) {
+			if (gameBoard.board[i] == '') {
+				gameBoard.board[i] = game.getActiveMarker();
+				let score = minimax(gameBoard.board, 0, false);
+				gameBoard.board[i] = '';
+				if (score > bestScore) {
+					bestScore = score;
+					move = i;
+				}
+			}
+		}
+
+		playMarker(move);
+	};
+
+	let scores = {};
+
+	const assignScores = function (player2Marker, player1Marker) {
+		scores[player2Marker] = 1;
+		scores[player1Marker] = -1;
+		scores['Tie'] = 0;
+	}
+
+	// Minimax
+	const minimax = function (board, depth, isMaximizing) {
+		let result = checkWinner(board);
+		if (result !== null) {
+			return scores[result]; // ******
+		}
+
+		if (isMaximizing) {
+			let bestScore = -Infinity;
+			// gameBoard.board.forEach(function (cell) {
+			// 	if (cell == '') {
+			// 		cell = player2.getMarker();
+			// 		let score = minimax(gameBoard.board, depth + 1, false);
+			// 		cell = '';
+			// 		bestScore = max(score, bestScore);
+			// 	}
+			// });
+			for (k = 0; k < board.length; k++) {
+				if (board[k] == '') {
+					board[k] = player2.getMarker();
+					let score = minimax(board, depth + 1, false);
+					board[k] = '';
+					bestScore = Math.max(score, bestScore);
+				}
+			}
+			return bestScore;
+		} else {
+			let bestScore = Infinity;
+			// gameBoard.board.forEach(function (cell) {
+			// 	if (cell == '') {
+			// 		cell = player1.getMarker();
+			// 		let score = minimax(gameBoard.board, depth + 1, true);
+			// 		cell = '';
+			// 		bestScore = min(score, bestScore);
+			// 	}
+			// });
+			for (k = 0; k < board.length; k++) {
+				if (board[k] == '') {
+					board[k] = player1.getMarker();
+					let score = minimax(board, depth + 1, true);
+					board[k] = '';
+					bestScore = Math.min(score, bestScore);
+				}
+			}
+			return bestScore;
+		}
+	}
 
 	return {
 		getActivePlayer,
@@ -271,9 +368,46 @@ const game = (() => {
 		startGame,
 		resetGame,
 		computerPlay,
-		humanPlay
+		humanPlay,
 	};
 })();
 
-// Minimax
-// function bestMove() {}
+// let scores = {};
+
+// function assignScores(player2Marker, player1Marker) {
+// 	scores[player2Marker] = 1;
+// 	scores[player1Marker] = -1;
+// 	scores['Tie'] = 0;
+// }
+
+// // Minimax
+// function minimax(board, depth, isMaximizing) {
+// 	let result = game.checkWinner(gameBoard.board);
+// 	if (result !== null) {
+// 		return scores[result]; // ******
+// 	}
+
+// 	if (isMaximizing) {
+// 		let bestScore = -Infinity;
+// 		gameBoard.board.forEach(function (cell) {
+// 			if (cell == '') {
+// 				cell = [player2.getMarker()];
+// 				let score = minimax(board, depth + 1, false);
+// 				cell = '';
+// 				bestScore = max(score, bestScore);
+// 			}
+// 		});
+// 		return bestScore;
+// 	} else {
+// 		let bestScore = Infinity;
+// 		gameBoard.board.forEach(function (cell) {
+// 			if (cell == '') {
+// 				cell = [player1.getMarker()];
+// 				let score = minimax(board, depth + 1, true);
+// 				cell = '';
+// 				bestScore = min(score, bestScore);
+// 			}
+// 		});
+// 		return bestScore;
+// 	}
+// }
